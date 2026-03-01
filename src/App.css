@@ -1,0 +1,223 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* VSCode风格整体布局 */
+.vscode-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.vscode-header {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: #23272e;
+  border-bottom: 1px solid #2c2c32;
+  padding: 0 16px;
+  position: relative;
+}
+
+.vscode-logo {
+  height: 32px;
+  margin-right: 12px;
+}
+
+.vscode-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #d4d4d4;
+}
+
+.vscode-main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.vscode-sidebar {
+  width: 242px; /* 原220px加10% */
+  min-width: 120px;
+  max-width: 60vw;
+  background: #252526;
+  border-right: 1px solid #2c2c32;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  resize: horizontal;
+  overflow: auto;
+}
+
+.vscode-sidebar-section {
+  margin-bottom: 24px;
+}
+.vscode-sidebar-section input[type="number"] {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.vscode-sidebar-section input[type="color"] {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.vscode-sidebar-section label {
+  margin-bottom: 4px;
+}
+
+.vscode-input {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 12px;
+  background: #1e1e1e;
+  border: 1px solid #3c3c3c;
+  color: #d4d4d4;
+  border-radius: 4px;
+}
+
+.vscode-btn {
+  width: 100%;
+  padding: 8px 0;
+  background: #007acc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.vscode-btn:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+.vscode-btn:not(:disabled):hover {
+  background: #005a9e;
+}
+
+.vscode-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e1e1e;
+  min-width: 0;
+  position: relative;
+}
+
+.vscode-canvas {
+  width: 800px;
+  height: 600px;
+  background: #222;
+  border-radius: 8px;
+}
+
+.vscode-slider {
+  width: 100%;
+  margin: 8px 0;
+}
+.vscode-btn {
+  margin-bottom: 8px;
+}
+.vscode-sidebar-section button.vscode-btn {
+  margin-right: 6px;
+  margin-bottom: 6px;
+  width: auto;
+  min-width: 60px;
+  display: inline-block;
+}
+
+.axes-widget {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  width: 80px;
+  height: 80px;
+  z-index: 10;
+  background: transparent;
+}
+
+.model-info-panel {
+  position: absolute;
+  top: -120px;
+  right: 16px;
+  background: #23272e;
+  color: #d4d4d4;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 15px;
+  box-shadow: 0 2px 8px #0006;
+  z-index: 20;
+  min-width: 180px;
+  max-width: 320px;
+  word-break: break-all;
+}
+.model-info-panel h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #61dafb;
+}
+.model-info-panel .info-row {
+  margin-bottom: 4px;
+}
+/* 预览图片容器 */
+.voxel-preview-container {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  border: 1px solid #444;
+  
+  /* === 核心：棋盘格背景 CSS === */
+  background-image: 
+    linear-gradient(45deg, #333 25%, transparent 25%), 
+    linear-gradient(-45deg, #333 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #333 75%),
+    linear-gradient(-45deg, transparent 75%, #333 75%);
+  background-size: 20px 20px; /* 格子大小 */
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-color: #222; /* 底色 */
+}
+
+/* 预览图片本身 */
+.voxel-preview-container img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated; /* 保持像素清晰 */
+}
