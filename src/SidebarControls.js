@@ -33,11 +33,21 @@ export function SidebarControls({
 }) {
   return (
     <>
+          <div className="vscode-sidebar-section">
+        <label className="vscode-label">选择示例模型</label>
+        <select className="vscode-input" onChange={handleSampleModel} defaultValue="">
+          <option value="">请选择</option>
+          {sampleModels.map(m => (
+            <option key={m.file} value={m.file}>{m.name}</option>
+          ))}
+        </select>
+      </div>
       <div className="vscode-sidebar-section">
         <label htmlFor="ply-upload" className="vscode-label">上传PLY点云文件</label>
         <input id="ply-upload" type="file" accept=".ply" onChange={handleFileChange} className="vscode-input" />
         <button className="vscode-btn" onClick={handlePreview} disabled={!fileContent}>预览</button>
       </div>
+      
       <div className="vscode-sidebar-section">
         <label className="vscode-label">地面网格单位（自动适配）</label>
         <input type="number" min="0.01" step="0.01" value={gridSize} onChange={e => setGridSize(Number(e.target.value))} className="vscode-input" />
@@ -92,15 +102,7 @@ export function SidebarControls({
           </label>
         </div>
       </div>
-      <div className="vscode-sidebar-section">
-        <label className="vscode-label">选择示例模型</label>
-        <select className="vscode-input" onChange={handleSampleModel} defaultValue="">
-          <option value="">请选择</option>
-          {sampleModels.map(m => (
-            <option key={m.file} value={m.file}>{m.name}</option>
-          ))}
-        </select>
-      </div>
+
     </>
   );
 }

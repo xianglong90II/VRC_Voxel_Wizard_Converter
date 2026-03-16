@@ -1,8 +1,7 @@
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import React, { useRef, useEffect, useState } from 'react';
 import { setupControls } from './controls';
-import { createAxesWidget } from './axesWidget';
 import { parsePLY } from './parsePLY';
 import { SidebarControls } from './SidebarControls';
 import { renderScene } from './sceneRender';
@@ -37,39 +36,62 @@ function App() {
     setGridSize(1);
   }, [points]);
 
-  useEffect(() => {
-    if (!preview || !mountRef.current) return;
-    mountRef.current.innerHTML = '';
-    const width = 800;
-    const height = 600;
-    // 使用renderScene模块
-    const {scene, camera, renderer} = renderScene({
-      points,
-      gridSize,
-      showGrid,
-      pointSize,
-      pointColor,
-      showCubes,
-      showWireframe,
-      sliceBoxSize,
-      sliceBoxAlignBottom,
-      rotationX,
-      rotationY,
-      rotationZ,
-      width,
-      height
-    });
-    mountRef.current.appendChild(renderer.domElement);
-    setupControls(camera, renderer);
-    function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    }
-    animate();
-    return () => {
-      renderer.dispose();
-    };
-  }, [preview, points, gridSize, showGrid, pointSize, pointColor, showCubes, showWireframe, sliceBoxSize, rotationX, rotationY, rotationZ, sliceBoxAlignBottom]);
+useEffect(() => {
+  if (!preview || !mountRef.current) return;
+  mountRef.current.innerHTML = '';
+
+  // 1. 动态获取当前容器的实际宽高（全屏模式下这两个值会很大）
+  const width = mountRef.current.clientWidth;
+  const height = mountRef.current.clientHeight;
+
+  // 使用 renderScene 模块，传入当前实际尺寸
+  const { scene, camera, renderer } = renderScene({
+    points,
+    gridSize,
+    showGrid,
+    pointSize,
+    pointColor,
+    showCubes,
+    showWireframe,
+    sliceBoxSize,
+    sliceBoxAlignBottom,
+    rotationX,
+    rotationY,
+    rotationZ,
+    width,
+    height
+  });
+
+  mountRef.current.appendChild(renderer.domElement);
+  setupControls(camera, renderer);
+
+  // 2. 添加窗口缩放监听，防止拉伸窗口后内容不变
+  const handleResize = () => {
+    if (!mountRef.current) return;
+    const newWidth = mountRef.current.clientWidth;
+    const newHeight = mountRef.current.clientHeight;
+
+    // 更新相机比例
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+
+    // 更新渲染器尺寸
+    renderer.setSize(newWidth, newHeight);
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+    renderer.dispose();
+  };
+}, [preview, points, gridSize, showGrid, pointSize, pointColor, showCubes, showWireframe, sliceBoxSize, rotationX, rotationY, rotationZ, sliceBoxAlignBottom]);
 
   function handleFileChange(e) {
     const file = e.target.files[0];
@@ -110,17 +132,6 @@ function App() {
       alert("模型过大，已切换至“仅切图”模式。");
     }
   }
-
-  // 坐标轴控件挂载
-  const axesRef = useRef();
-
-  useEffect(() => {
-    if (axesRef.current) {
-      axesRef.current.innerHTML = '';
-      const axesDom = createAxesWidget(80, 80);
-      axesRef.current.appendChild(axesDom);
-    }
-  }, [preview]);
 
   // 计算模型边界信息
   const [modelInfo, setModelInfo] = useState(null);
@@ -200,7 +211,6 @@ function App() {
       <div className="vscode-header">
         <img src={logo} className="vscode-logo" alt="logo" />
         <span className="vscode-title">VRC Voxel Wizard Converter</span>
-        <div ref={axesRef} className="axes-widget" />
       </div>
       <div className="vscode-main">
           <div className="vscode-sidebar">
@@ -223,8 +233,10 @@ function App() {
               setRotationY={setRotationY}
               rotationZ={rotationZ}
               setRotationZ={setRotationZ}
+
               sliceBoxSize={sliceBoxSize}
               setSliceBoxSize={setSliceBoxSize}
+              
               boxSizes={boxSizes}
               sliceBoxAlignBottom={sliceBoxAlignBottom}
               setSliceBoxAlignBottom={setSliceBoxAlignBottom}
@@ -235,6 +247,7 @@ function App() {
               handlePreview={handlePreview}
             />
           </div>
+
         <div className="vscode-view" style={{display:'flex',flexDirection:'row',height:'100%'}}>
           <div style={{flex:1,position:'relative'}}>
             <div className="vscode-canvas">
@@ -247,9 +260,7 @@ function App() {
               ) : (
                 <div ref={mountRef} className="vscode-canvas" />
               )}
-            </div>
-
-
+            
             {modelInfo && (
               <div className="model-info-panel">
                 <h4>模型信息</h4>
@@ -283,13 +294,14 @@ function App() {
                       document.body.removeChild(link);
                     }}>下载 RGBA 体素 Atlas</button>
                     <img className="voxel-preview-container" src={base64Image} alt="Voxel Atlas Preview" style={{maxWidth:'100%',height:'auto'}} />
-                    <span style={{color:'#d4d4d4',fontSize:14}}>按照“CT隧道扫描”逻辑生成，适用于 VRC Voxel Wizard 插件</span>
+                    <span style={{color:'#d4d4d4',fontSize:14}}>按照“CT隧道扫描”逻辑生成，适用于 VRC Voxel Wizard 着色器</span>
                   </div>
                 </div>
                 
                 
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>
